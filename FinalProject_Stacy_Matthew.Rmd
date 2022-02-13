@@ -1,0 +1,600 @@
+---
+title: "Final Project"
+author: "Matthew Stacy"
+date: "03/08/2020"
+output:
+  word_document: default
+  html_document:
+    df_print: paged
+---
+
+# Set Up
+
+If you do not have Package Management Tool, you may install it using this command.  
+install.packages("pacman")
+
+If you do not have R Markdown, you may install it using this command.  
+install.packages("rmarkdown")  
+
+If you do not have Political Science Computational Laboratory, you may install it using this command.  
+install.packages("pscl")
+
+If you do not have Tidyverse, you may install it using this command.  
+install.packages("tidyverse")  
+
+If you do not have Analysis and Presentation of Social Scientific Ddata, you may install it using this commnd.  
+install.packages("jtools")  
+
+To load R Markdown and Tidyverse, we can use pacman to conviently load the necessary packages.  
+pacman::p_load(pacman, rmarkdown, tidyverse)  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+pacman::p_load(pacman, tidyverse, pscl, jtools)
+```
+
+## Question 1
+Load the dataset day.csv into memory.
+
+```{r Question_1}
+day <- read.csv("C:/Users/stacy/OneDrive/School/Maryville/2020 - Spring/SDCI 502 - Introduction to R/Final Project/day.csv")
+head(day, 10)
+```
+
+In order to load the dataset into memory, we must first determine the file type. Since the dataset is housed within a comma seperated value (.csv) file, we will use read.csv() to read it into memeory and we will assign it to an object in the environment named "day". Next, we use the head() function to show that the dataset successfully imported into memory.
+
+## Question 2
+Perform the following data preparations using control structures:
+
+### Question 2A
+  a. Convert numerical season (1, 2, 3, 4) to characters (spring, summer, fall and winter)
+
+```{r Question_2A, echo = TRUE}
+day$season <- ifelse(day$season == 1, "spring",
+                     ifelse(day$season == 2, "summer",
+                            ifelse(day$season == 3, "fall",
+                                   "winter")))
+
+
+```
+
+To convert numbers found within a varible, we must first identify the different options. Since we know there are four possibilities, we can then assign them to characters representing different seasons. There are multiple ways to perform this action; however, I chose to use the ifelse() function. For each row, it will read the value and if the value is found to be true, it will execute the task of naming it, if not, the value will be pasted to the next ifelse() function. This will continue until the value has been converted to characters. Season "1" will be converted to "spring", season "2" will be converted to "summer", season "3" will be converted to "fall", and finally season "4" will be converted to "winter".
+
+### Question 2B
+  b. Convert numerical weathersit (1, 2, 3, 4) to characters (Good, Mist, Bad, Severe)
+
+```{r Question_2B, echo = TRUE}
+day$weathersit <- ifelse(day$weathersit == 1, "Good",
+                         ifelse(day$weathersit == 2, "Mist",
+                                ifelse(day$weathersit == 3, "Bad",
+                                       "Severe")))
+
+
+```
+
+To convert numbers found within a varible, we must first identify the different options. Since we know there are four possibilities, we can then assign them to characters representing different weather situations. There are multiple ways to perform this action; however, I chose to use the ifelse() function. For each row, it will read the value and if the value is found to be true, it will execute the task of naming it, if not, the value will be pasted to the next ifelse() function. This will continue until the value has been converted to characters. Weather situation "1" will be converted to "Good", weather situation "2" will be converted to "Mist", weather situation "3" will be converted to "Bad", and finally weather situation "4" will be converted to "Severe".
+
+## Question 3
+Consider the following predictors, season, holiday, workingday, weathersit, atemp, hum, windspeed, casual and List all categorical variasbles from the list and convert them to factors.
+
+```{r Question_3a}
+str(day)
+```
+
+To have a better look at the data, we can use str() to determine the different values found within each variable. Next, we can see that season, holiday, workingday, and weathersit are all categorical variables.
+
+```{r Question_3b}
+day$season <- as.factor(day$season)
+day$holiday <- as.factor(day$holiday)
+day$workingday <- as.factor(day$workingday)
+day$weathersit <- as.factor(day$weathersit)
+
+unlist(lapply(day, is.factor))
+summary(subset(day[c("season", "holiday", "workingday", "weathersit")]))
+```
+
+We then use the as.factor() function to convert them to factors. Then we we lapply() to show a list of each variable found within the dataset after the function is.factor() is applied and we use unlist() so that the output is displayed as a vector and not a list. Finally, we use the summary() function to summarize the categorical varibles. Since each summary output displays the frequency of each variable in the function, we know that each variable in the function is a factor.
+
+## Question 4
+Calculate the minimum, maximum, mean, median, standard deviation and three quartiles (25th, 50th and 75th percentiles) of cnt.
+
+```{r Question_4}
+summary(day$cnt)
+sd(day$cnt)
+```
+
+The quickest way to calculate the minimum, maximum, mean, median, and three quartiles (25th, 50th and 75th percentiles) of cnt is to use the summary() function. The 50th quartile is the same as the median and will be labeled that in the output. To calculate the standard deviation of cnt, we must use the sd() function. We see that the minimum is `r min(day$cnt)`, maximum is `r max(day$cnt)`, mean is `r mean(day$cnt)`, median is `r median(day$cnt)`, standard deviation is `r sd(day$cnt)`, first quartile (25th percentile) is `r quantile(day$cnt, probs = 0.25)`, second quartile (50th percentile or median) is `r quantile(day$cnt, probs = 0.5)`, and third quartile (75th percentile) is `r quantile(day$cnt, probs = 0.75)`.
+
+## Question 5
+Calculate the minimum, maximum, mean, median, standard deviation and three quartiles (25th, 50th and 75th percentiles) of registered.
+
+```{r Question_5}
+summary(day$registered)
+sd(day$registered)
+```
+
+The quickest way to calculate the minimum, maximum, mean, median, and three quartiles (25th, 50th and 75th percentiles) of registered is to use the summary() function. The 50th quartile is the same as the median and will be labeled that in the output. To calculate the standard deviation of registered, we must use the sd() function. We see that the minimum is `r min(day$registered)`, maximum is `r max(day$registered)`, mean is `r mean(day$registered)`, median is `r median(day$registered)`, standard deviation is `r sd(day$registered)`, first quartile (25th percentile) is `r quantile(day$registered, probs = 0.25)`, second quartile (50th percentile or median) is `r quantile(day$registered, probs = 0.5)`, and third quartile (75th percentile) is `r quantile(day$registered, probs = 0.75)`.
+
+## Question 6
+Calculate the correlation coefficient of the two variables: registered and cnt. Do they have a strong relationship?
+
+```{r Question_6}
+cor(day$registered, day$cnt)
+```
+
+In order to get the correlation coefficient of two variables, we use the cor() function. This indicates how strongly related they are. This value ranges from -1 to 1, inclusive. If the correlation coefficient is below 0 then there is a negative correlation and if the corrleation coefficient is above 0 then there is a positive correlation. If the correlation coefficient is 0 then there is no correlation between the two continous variables. We see that the correlation coefficient between registered and cnt is `r cor(day$registered, day$cnt)`. Since this is close to 1, these two variables have a positive relationship with a strong relationship between them.
+
+## Question 7
+Calculate the frequency table of season? What's the mode of season variable?
+
+```{r Question_7}
+table(day$season)
+names(sort(-table(day$season)))[1]
+```
+
+To calculate the frequency table of season, we use the table() function. This takes a categorical varible and places it within a vector format and displays the frequencies of all of the different values found within the variable. Within season, there are 4 different variables. In order to find the mode of a frequency table, we set the table as inverted by using the "-" operator, sort the values so that the values are in reverse order. Then we use the names() function to select the first one in the table with the "[1]" function after the command. We find that `r names(sort(-table(day$season)))[1]` has the highest frequency.
+
+## Question 8
+Calculate the cross table of season and weathersit, then produce proportions by rows and columns respectively.
+
+```{r Question_8}
+xtabs(~ season + weathersit, day)
+prop.table(xtabs(~ season + weathersit, day), 1)
+prop.table(xtabs(~ season + weathersit, day), 2)
+```
+
+To calculate the cross table of season and weathersit, we use the xtabs() function. We specify that we are using the factors based on R formula with the "~" operator and then list the factors seperated by a "+" operator. Once we state the data source and run the command, it will dispay a table with the first varible assigned on the y-axis and the second variable on the x-axis. The table displays frequencies that have both factors set to true. To calculate the proportions by rows, we use the same xtabs() function and nest it within prop.table(). This will convert the frequencies to proportions and when we specify the margin value at the end of the function, it will dictate rows or columns. If the margin is set to 1, then the proportions will equal 1 when added together across the rows. If the margin is set to 2, then the proportions will equal 1 when added together down the columns.
+
+## Question 9
+Please plot the histogram and density of the cnt and add the vertical line denoting the mean using ggplot2.
+
+```{r Question_9}
+ggplot(day,
+       aes(cnt)) + 
+  geom_histogram(aes(y = ..density..),
+                 color = "black",
+                 fill = "white",
+                 bins = 30) +
+  geom_density(alpha = .2) +
+  geom_vline(aes(xintercept = mean(cnt)),
+             color = "firebrick2",
+             linetype = "dashed",
+             size = 1) +
+  ggtitle("Histogram & Density of Total Rental Bikes") +
+  xlab("Total Rental Bikes") +
+  ylab("Density")
+```
+
+First, the data is read into the function ggplot(), which will create a general plot template using the selected data. Since we are interested in plotting the cnt variable, we assign the aes() function to read cnt. Next, the geom_histogram() variable assigns the general plot template to the histogram format. After that, the specifications of the graph can be outlined, starting with the primary aesthetics. Since it is a histogram, the function assumes that the x-axis is the primary selected data; next we assign the y-axis to the density using “..density..”. This will calculate the proportions of the the data and display it on the y-axis. Then, the parameters can be set: “color” for color, “fill” for filling the bins with color, and “bins” denotes the number of bins within the histogram. I stuck with 30 because it avoids the comb look when you have too many bins. Next, we use geom_density() to calculate the density of the histogram and plot it on a continuous line. We specify the parameters with “alpha” for transparency. Then, geom-vline() plots a vertical line with the aesthetic of the x-intercept equal to the mean of the cnt. We can also provide similar parameters that will alter the appearance: “linetype” for the structure of the line and “size” for width. Finally, we can assign titles to the graph using ggtitle() (main title), xlab() (x-axis label), and ylab() (y-axis label).
+
+## Question 10
+Please scatter plot of cnt (y-axis) against weathersit (x-axis) and add the trend line using ggplot2.
+
+```{r Question_10}
+ggplot(data = day,
+       aes(x = registered, 
+           y  = cnt)) +
+  geom_point() +
+  geom_smooth(method = loess,
+              formula = 'y ~ x') +
+  ggtitle("Scatter Plot of Total Rental Bikes vs. Registered Users") +
+  xlab("Registered Users") +
+  ylab("Total Rental Bikes")
+```
+
+To plot a scatter plot using ggplot2, we use the ggplot() function. Next, we identify the parameters of the x-axis and the y-axis. Then we identify that we want a scatter plot by using geom_point(). For the trend line, we use geom_smooth() and identify the method “loess" as we have less than 1000 data points and use the default formula for that method. Finally, we can assign titles to the graph using ggtitle() (main title), xlab() (x-axis label), and ylab() (y-axis label).
+
+## Question 11
+Please plot the barplot of season and weathersit on the same barplot using ggplot2.
+
+```{r Question_11}
+ggplot(day,
+       aes(x = season,
+           fill = weathersit)) +
+  geom_bar(position = "dodge") +
+  geom_text(aes(label = ..count..),
+            stat = 'count',
+            position = position_dodge(width = 0.9),
+            vjust = -0.25) +
+  ggtitle("Barplot of Season & Weather Situation") +
+  xlab("Season") +
+  ylab("Frequency")
+```
+
+Like previous graphs, to plot using ggplot2, we must first use the ggplot() function and specify our data. Then, we assign the aesthetics by using “x=” and "fill=" (the fill command dictates that the graph separates each season into the different weather situations. Next, we use geom_bar() to specify that we want a bar plot. Within the bar plot command, we assign the “position” so it is a side by side bar plot. Then, to add labels to each bar, we add the geom_text() funciton. When we specify the label to be "..count..", it will add counts to the top of each bar for easy reading. We add the parameters of "stat" for statistical transformatoin, "position" for position of counts, and "vjust" for shifting the value on the v-axis. Finally, we can assign titles to the graph using ggtitle() (main title), xlab() (x-axis label), and ylab() (y-axis label).
+
+## Question 12
+Please boxplot cnt (y-axis) against weathersit (x-axis) and save the graph in a file, cntweather.jpg, using ggplot2. Are there any differences in cnt with respect to weathersit?
+
+```{r Question_12}
+ggplot(data = day,
+       aes(x = weathersit,
+           y = cnt)) +
+  geom_boxplot(aes(col = weathersit),
+               outlier.color = "red",
+               outlier.shape = 16,
+               outlier.size = 3,
+               notch = T) +
+  ggtitle("Box Plot of Total Rental Bikes") +
+  xlab("Weather Situation") +
+  ylab("Total Rental Bikes") +
+  ggsave("C:/Users/stacy/OneDrive/School/Maryville/2020 - Spring/SDCI 502 - Introduction to R/Final Project/cntweather.jpg")
+```
+
+To create a box plot using ggplot2, we start the command string with ggplot(). We then identify the data set we are analyzing and then set the aesthetics. For this, we are using weathersit as the x-axis and cnt for the y-axis. Next, we use geom_boxplot() to signify that we want the plot to be a boxplot and then we set the aesthetics for the boxplot. We can then set an aesthetic by setting “col” to weathersit and this colorizes our different box plots and creates a legend by color. We can modify the outliers to make them more visible and can also set “notch=” to true so there will be a notch. Finally, we can assign titles to the graph using ggtitle() (main title), xlab() (x-axis label), and ylab() (y-axis label). After the graph has been created, we can use ggsave() to save the graph to a specified file location. This method will create the graphic within the IDE. It appears that if the weather situation is good, then there will be more bikes rented than any other weather condition. This can be expected as riders would rather be outside with favorable weather than less than favorable weather.
+
+## Question 13
+Building the following multiple linear regression models:
+
+### Question 13A
+  a. Perform multiple linear regression with cnt as the response and the predictors are: season, weathersit, atempt, and registered. Write down the math formula with numerical coeffients.
+
+```{r Question_13A}
+lm.resulta <- lm(cnt ~ season + weathersit + atemp + registered, day)
+summary(lm.resulta)
+```
+
+To build a linear model, we must use the lm() function. For this, the lm() format is (y~x) y is a function of x. We can manipulate x to include multiple variables and exclude others. For this linear model, we need to include season, weathersit, atemp, and registered. To do this, we can use the "+" operator to include them into the model. All of these will be used to create a formula to forecast the total rental bikes. Since season and weathersit are classified as factors, they will be displayed differently. For each different factor level, there will be a different coefficient that is added to the y-intercept value. You will notice that the y-intercept value changes as the levels change as the factor variables will impact the total rental bikes. Since there is no infinite value that is plugged into the math formula, the levels are simply displayed as values and will not be multipled by a different variable once completed. You will notice that the math formulas below contain only 2 variables but there are 12 different functions, one for each factor variable. Since there are 4 different seaon levels and 3 different weathersit levels, these values will be multiplied to create the piecewise function containing 24 formulas. We assign the result of the linear model to an object that we can plug into the summary() function. This will tell us the coefficients of the different variables and will also describe the y-intercept. It will also describe information about the linear model about the r squared and adjusted r squared. We will use the adjusted r squared to compare to other models as it removes the factor of the number of variables for comparison. The r squared value tells the user how well the information fits to a linear model. The closer the value is to 1, the better the fitness and the closer the value is to 0, the worse the fitness. Since this adjusted r squared is `r summary(lm.resulta)$adj.r.squared`, this is a good fit.
+
+cnt (season=fall, weathersit=Bad) =  
+`r lm.resulta$coefficients["(Intercept)"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, weathersit=Good) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["weathersitGood"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, weathersit=Mist) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["weathersitMist"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, weathersit=Bad) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonspring"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, weathersit=Good) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonspring"] + lm.resulta$coefficients["weathersitGood"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, weathersit=Mist) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonspring"] + lm.resulta$coefficients["weathersitMist"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, weathersit=Bad) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonsummer"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, weathersit=Good) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonsummer"] + lm.resulta$coefficients["weathersitGood"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, weathersit=Mist) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonsummer"] + lm.resulta$coefficients["weathersitMist"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, weathersit=Bad) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonwinter"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, weathersit=Good) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonwinter"] + lm.resulta$coefficients["weathersitGood"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, weathersit=Mist) =  
+`r lm.resulta$coefficients["(Intercept)"] + lm.resulta$coefficients["seasonwinter"] + lm.resulta$coefficients["weathersitMist"]` - (`r lm.resulta$coefficients["atemp"]` * Feel_Temp) + (`r lm.resulta$coefficients["registered"]` * Reg_Users)
+
+### Question 13B
+  b. Perform multiple linear regression with cnt as the response and the predictors are: season, workingday, weathersit, atempt, and registered. Write down the math formula with numerical coefficients.
+
+```{r Question_13B}
+lm.resultb <- lm(cnt ~ season + workingday + weathersit + atemp + hum + windspeed + registered, day)
+summary(lm.resultb)
+```
+
+To build a linear model, we must use the lm() function. For this, the lm() format is (y~x) y is a function of x. We can manipulate x to include multiple variables and exclude others. For this linear model, we need to include season, workingday, weathersit, atemp, hum, windspeed, and registered. To do this, we can use the "+" operator to include them into the model. All of these will be used to create a formula to forecast the total rental bikes. Since season, workingday, and weathersit are classified as factors, they will be displayed differently. For each different factor level, there will be a different coefficient that is added to the y-intercept value. You will notice that the y-intercept value changes as the levels change as the factor variables will impact the total rental bikes. Since there is no infinite value that is plugged into the math formula, the levels are simply displayed as values and will not be multipled by a different variable once completed. You will notice that the math formulas below contains 4 variables but there are 24 different functions, one for each factor variable. Since there are 4 different seaon levels, 2 different workingday levels, and 3 different weathersit levels, these values will be multiplied to create the piecewise function containing 24 formulas. We assign the result of the linear model to an object that we can plug into the summary() function. This will tell us the coefficients of the different variables and will also describe the y-intercept. It will also describe information about the linear model about the r squared and adjusted r squared. We will use the adjusted r squared to compare to other models as it removes the factor of the number of variables for comparison. The r squared value tells the user how well the information fits to a linear model. The closer the value is to 1, the better the fitness and the closer the value is to 0, the worse the fitness. Since this adjusted r squared is `r summary(lm.resultb)$adj.r.squared`, this is a good fit. This linear model is a better fit than the model found in part A.
+
+cnt (season=fall, workingday=0, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users) 
+
+cnt (season=fall, workingday=0, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, workingday=0, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, workingday=0, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonspring"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, workingday=0, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonspring"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, workingday=0, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonspring"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, workingday=0, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonsummer"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, workingday=0, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonsummer"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, workingday=0, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonsummer"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, workingday=0, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonwinter"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, workingday=0, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonwinter"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, workingday=0, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonwinter"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, workingday=1, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["workingday1"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users) 
+
+cnt (season=fall, workingday=1, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, workingday=1, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, workingday=1, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonspring"] + lm.resultb$coefficients["workingday1"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, workingday=1, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonspring"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, workingday=1, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonspring"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, workingday=1, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonsummer"] + lm.resultb$coefficients["workingday1"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, workingday=1, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonsummer"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, workingday=1, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonsummer"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, workingday=1, weathersit=Bad) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonwinter"] + lm.resultb$coefficients["workingday1"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, workingday=1, weathersit=Good) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonwinter"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitGood"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, workingday=1, weathersit=Mist) =  
+`r lm.resultb$coefficients["(Intercept)"] + lm.resultb$coefficients["seasonwinter"] + lm.resultb$coefficients["workingday1"] + lm.resultb$coefficients["weathersitMist"]` - (`r lm.resultb$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultb$coefficients["hum"]` * Humidity) + (`r lm.resultb$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultb$coefficients["registered"]` * Reg_Users)
+
+### Question 13C
+  c. Perform multiple linear regression with cnt as the response and the predictors are: season, holiday, workingday, weathersit, atempt, hum, windspeed, and registed. Write down the math formula with numerical coefficients.
+
+```{r Question_13C}
+lm.resultc <- lm(cnt ~ season + holiday + workingday + weathersit + atemp + hum + windspeed + registered, day)
+summary(lm.resultc)
+```
+
+To build a linear model, we must use the lm() function. For this, the lm() format is (y~x) y is a function of x. We can manipulate x to include multiple variables and exclude others. For this linear model, we need to include season, holiday, workingday, weathersit, atemp, hum, windspeed, and registered. To do this, we can use the "+" operator to include them into the model. All of these will be used to create a formula to forecast the total rental bikes. Since season, holiday, workingday, and weathersit are classified as factors, they will be displayed differently. For each different factor level, there will be a different coefficient that is added to the y-intercept value. You will notice that the y-intercept value changes as the levels change as the factor variables will impact the total rental bikes. Since there is no infinite value that is plugged into the math formula, the levels are simply displayed as values and will not be multipled by a different variable once completed. You will notice that the math formulas below contains 4 variables but there are 48 different functions, one for each factor variable. Since there are 4 different seaon levels, 2 different holiday levels, 2 different workingday levels, and 3 different weathersit levels, these values will be multiplied to create the piecewise function containing 48 formulas. We assign the result of the linear model to an object that we can plug into the summary() function. This will tell us the coefficients of the different variables and will also describe the y-intercept. It will also describe information about the linear model about the r squared and adjusted r squared. We will use the adjusted r squared to compare to other models as it removes the factor of the number of variables for comparison. The r squared value tells the user how well the information fits to a linear model. The closer the value is to 1, the better the fitness and the closer the value is to 0, the worse the fitness. Since this adjusted r squared is `r summary(lm.resultc)$adj.r.squared`, this is a good fit. This linear model is a better fit than the model found in part A.
+
+cnt (season=fall, holiday = 0, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users) 
+
+cnt (season=fall, holiday = 0, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall,  holiday = 0, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 0, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonspring"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 0, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 0, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 0, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonsummer"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 0, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 0, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 0, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonwinter"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 0, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 0, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, holiday = 0, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users) 
+
+cnt (season=fall, holiday = 0, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, holiday = 0, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 0, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 0, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 0, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 0, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 0, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 0, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 0, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 0, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 0, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, holiday = 1, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users) 
+
+cnt (season=fall, holiday = 1, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall,  holiday = 1, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 1, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonspring"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 1, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 1, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 1, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonsummer"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 1, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 1, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 1, workingday=0, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonwinter"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 1, workingday=0, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 1, workingday=0, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, holiday = 1, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users) 
+
+cnt (season=fall, holiday = 1, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=fall, holiday = 1, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 1, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 1, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=spring, holiday = 1, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonspring"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 1, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 1, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=summer, holiday = 1, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonsummer"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 1, workingday=1, weathersit=Bad) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["workingday1"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 1, workingday=1, weathersit=Good) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitGood"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+cnt (season=winter, holiday = 1, workingday=1, weathersit=Mist) =  
+`r lm.resultc$coefficients["(Intercept)"] + lm.resultc$coefficients["holiday1"] + lm.resultc$coefficients["seasonwinter"] + lm.resultc$coefficients["workingday1"] + lm.resultc$coefficients["weathersitMist"]` - (`r lm.resultc$coefficients["atemp"]` * Feel_Temp) + (`r lm.resultc$coefficients["hum"]` * Humidity) + (`r lm.resultc$coefficients["windspeed"]` * Wind_Speed) + (`r lm.resultc$coefficients["registered"]` * Reg_Users)
+
+### Question 13D
+  d. Which model do you recommend to the management based on adjusted R squared? Justify your answer.
+
+When comparing the adjusted R squared values of the three linear models, the model found within part c would be the best choice. Even though the adjusted R squared values are marginally different between part b and c, the optimal choice would be part c. They are all very good choices to forecast values; however, since the adjusted R squared value in part c is `r summary(lm.resultc)$adj.r.squared - summary(lm.resultb)$adj.r.squared` larger than part b and `r summary(lm.resultc)$adj.r.squared - summary(lm.resulta)$adj.r.squared` larger than part a, the best choice is the model found in part c.
+
+## Question 14
+Building the following logistic models:
+
+### Question 14A
+  a. forecast holiday using cnt, season, and registred.
+
+```{r Question_14A}
+glm.resulta <- glm(holiday ~ cnt + season + registered,
+                   family = binomial,
+                   data  = day)
+pR2(glm.resulta)
+```
+
+```{r Question_14a, echo = FALSE}
+predict.proba <- predict(glm.resulta, day, type = "response")
+day$predict.proba <- ifelse(predict.proba <= 0.5, 0, 1)
+```
+
+To build a generalized linear model, we must use the glm() function. For this, the glm() format is y is a function of x. We can manipulate x to include multiple variables and exclude others. For this generalized linear model, we need to include cnt, season, and registered. Then we need to specify that we are using the binomial family because the outcome is either 0 or 1, and finally we specify the dataset. All of this will be used to create a formula to forecast if it is a holiday or not. We assign the result of the generalized linear model to an object that we can plug into the pR2() function. This will tell us the McFadden/pseudo R squared value of the model. We will use the McFadden/pseudo R squared to compare to other models. The McFadden/pseudo R squared value tells the user how well the information fits to a model. The lager the value is, the better the fitness. This statistic does not use the same fitness criteria as traditional R squared values but it still determines fitness. The McFadden/pseudo R squared value is `r pR2(glm.resulta)["McFadden"]`, which indicates a poor fit. The accuracy of this model is `r round(mean(day$predict.proba == day$holiday), 5)`.
+
+### Question 14B
+  b. forecast the holiday using cnt, season, weathersit, and registed
+
+```{r Question_14B}
+glm.resultb <- glm(holiday ~ cnt + season + weathersit + registered,
+                   family = binomial,
+                   data  = day)
+pR2(glm.resultb)
+```
+
+```{r Question_14b, echo = FALSE}
+predict.probb <- predict(glm.resultb, day, type = "response")
+day$predict.probb <- ifelse(predict.probb <= 0.5, 0, 1)
+```
+
+To build a generalized linear model, we must use the glm() function. For this, the glm() format is y is a function of x. We can manipulate x to include multiple variables and exclude others. For this generalized linear model, we need to include cnt, season, weathersit, and registered. Then we need to specify that we are using the binomial family because the outcome is either 0 or 1, and finally we specify the dataset. All of this will be used to create a formula to forecast if it is a holiday or not. We assign the result of the generalized linear model to an object that we can plug into the pR2() function. This will tell us the McFadden/pseudo R squared value of the model. We will use the McFadden/pseudo R squared to compare to other models. The McFadden/pseudo R squared value tells the user how well the information fits to a model. The lager the value is, the better the fitness. This statistic does not use the same fitness criteria as traditional R squared values but it still determines fitness. The McFadden/pseudo R squared value is `r pR2(glm.resultb)["McFadden"]`, which indicates a poor fit. The accuracy of this model is `r round(mean(day$predict.probb == day$holiday), 5)`.
+
+### Question 14C
+  c. forecast the holiday using cnt, season, weathersit, workingday, and registered
+
+```{r Question_14C}
+glm.resultc <- glm(holiday ~ cnt + season + weathersit + workingday + registered,
+                   family = binomial,
+                   data  = day)
+pR2(glm.resultc)
+```
+
+```{r Question_14c}
+predict.probc <- predict(glm.resultc, day, type = "response")
+day$predict.probc <- ifelse(predict.probc <= 0.5, 0, 1)
+```
+
+To build a generalized linear model, we must use the glm() function. For this, the glm() format is y is a function of x. We can manipulate x to include multiple variables and exclude others. For this generalized linear model, we need to include cnt, season, and registered. Then we need to specify that we are using the binomial family because the outcome is either 0 or 1, and finally we specify the dataset. All of this will be used to create a formula to forecast if it is a holiday or not. We assign the result of the generalized linear model to an object that we can plug into the pR2() function. This will tell us the McFadden/pseudo R squared value of the model. We will use the McFadden/pseudo R squared to compare to other models. The McFadden/pseudo R squared value tells the user how well the information fits to a model. The lager the value is, the better the fitness. This statistic does not use the same fitness criteria as traditional R squared values but it still determines fitness. The McFadden/pseudo R squared value is `r pR2(glm.resultc)["McFadden"]`, which indicates a good fit. The accuracy of this model is `r round(mean(day$predict.probc == day$holiday), 5)`.
+
+### Question 14D
+  d. Which model do you recommend to the mangement based on McFadden/pseudo R squared to? Justify your answer.
+
+When comparing the McFadden/pseudo R squared values of the three generalized linear models, the model found within part c would be the best choice. The McFadden/pseudo R squared value in model c is `r (pR2(glm.resultc)["McFadden"])/(pR2(glm.resultb)["McFadden"])` times larger than that found in model b and `r (pR2(glm.resultc)["McFadden"])/(pR2(glm.resulta)["McFadden"])` times larger than that found in model a. Suprisingly, all of the models have the same accuracy but the optimal choice is model c.
+
+## Question 15
+Summarize Question 13 and Question 14 using R markdown to generate reproducible reports.
+
+```{r Question_15A}
+export_summs(lm.resulta, lm.resultb, lm.resultc, error_format = "[{conf.low}, {conf.high}]")
+```
+
+To summarize Question 13, we can put them all into a table (as seen above) and compare the coefficients. The confidence intervals low and high are presented below each coefficient to show the possible range of values. Under each model, it shows the fitness with the R squared and the number of observations found within each model. You can also see the different variables that are found within each model. For more detail on the model, please see Question 13.
+
+```{r Question_15B}
+export_summs(glm.resulta, glm.resultb, glm.resultc, error_format = "[{conf.low}, {conf.high}]")
+```
+
+To summarize Question 14, we can put them all into a table (as seen above) and compare the coefficients. The confidence intervals low and high are presented below each coefficient to show the possible range of values. Under each model, it shows the fitness with the pseudo R squared and the number of observations found within each model. You can also see the different variables that are found within each model. For more detail on the model, please see Question 14.
+
+## Clean Up
+Once completed, you may clear your R Studio with the following:
+
+Clear Plots  
+dev.off()
+
+Clear Environments  
+rm(list = ls())
+
+Clear Console  
+cat("\014") #Or ctrl/cmd + L
